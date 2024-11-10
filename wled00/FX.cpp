@@ -7662,6 +7662,50 @@ static const char _data_FX_MODE_2DWAVINGCELL[] PROGMEM = "Waving Cell@!,,Amplitu
 #endif // WLED_DISABLE_2D
 
 
+///////////////////
+
+
+
+uint16_t mode_heart(void) {
+  uint16_t pixelLen = SEGLEN > UINT8_MAX ? UINT8_MAX : SEGLEN;
+  uint16_t dataSize = sizeof(uint32_t) * (pixelLen + 1);  // max segment length of 56 pixels on 16 segment ESP8266
+  if (!SEGENV.allocateData(dataSize)) return mode_static(); //allocation failed
+  uint32_t* pixels = reinterpret_cast<uint32_t*>(SEGENV.data);
+  uint8_t blendSpeed = map(SEGMENT.intensity, 0, UINT8_MAX, 10, 128);
+  uint8_t shift = (strip.now * ((SEGMENT.speed >> 3) +1)) >> 8;
+
+  for (int i = 0; i < pixelLen; i++) {
+    pixels[i] = color_blend(pixels[i], SEGMENT.color_from_palette(shift + quadwave8((i + 1) * 16), false, PALETTE_SOLID_WRAP, 255), blendSpeed);
+    shift += 3;
+  }
+
+  uint16_t offset = 0;
+  for (int i = 0; i < SEGLEN; i++) {
+    SEGMENT.setPixelColor(i, pixels[offset++]);
+    if (offset > pixelLen) offset = 0;
+  }
+
+  return FRAMETIME;
+}
+static const char _data_FX_MODE_HEART[] PROGMEM = "Heart@Shift speed,Blend speed;;!";
+
+
+///////////////////
+
+
+// /*
+//  * No blinking. Just plain old static light.
+//  */
+// uint16_t mode_heart1(void) {
+//   SEGMENT.fill(SEGCOLOR(0));
+//   return strip.isOffRefreshRequired() ? FRAMETIME : 350;
+// }
+// static const char _data_FX_MODE_STATIC[] PROGMEM = "Heart 1";
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // mode data
 static const char _data_RESERVED[] PROGMEM = "RSVD";
