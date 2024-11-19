@@ -315,9 +315,11 @@
 #define FX_MODE_ROCKTAVES              185
 #define FX_MODE_2DAKEMI                186
 
-#define FX_MODE_HEART                  187
+#define FX_MODE_HEART_RED              187
+#define FX_MODE_HEART_BLUE             188
+#define FX_MODE_HEART_PINK             189
 
-#define MODE_COUNT                     188
+#define MODE_COUNT                     190
 
 typedef enum mapping1D2D {
   M12_Pixels = 0,
